@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEX | Graphic Designer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#0a0f1c', // Darker, richer blue
+                        offWhite: '#f1f5f9',
+                        neonGreen: '#39ff14',
+                        surface: '#111827',
+                        // Primary color from the reference image (dark navy)
+                        primaryDark: '#050a16', 
+                        accentBlue: '#007bff', // A deep blue for contrast elements
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050a16; /* Match image background */
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050a16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #007bff; /* Use the blue accent color */
+        }
+
+        /* Utility: Text Selection */
+        ::selection {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Animation Classes for Scroll Observer */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Button Ripple Effect */
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Form Input Animation */
+        .input-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .input-group input, .input-group textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #334155;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-group label {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            color: #94a3b8;
+            pointer-events: none;
+            transition: 0.3s ease all;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-bottom-color: #007bff;
+        }
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label,
+        .input-group textarea:focus ~ label,
+        .input-group textarea:valid ~ label {
+            top: -20px;
+            font-size: 12px;
+            color: #007bff;
+        }
+        
+        /* Custom geometric element for the About section circle */
+        .about-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border: 2px solid rgba(0, 123, 255, 0.2);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.5;
+            animation: pulse-slow 6s ease-in-out infinite;
+        }
+        .about-circle::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 2px solid rgba(0, 123, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        /* Project Card Styling */
+        .project-card {
+            background-color: #0a0f1c; /* Darker card background */
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+        }
+
+        /* Modal/Message Box Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Darker backdrop for lightbox */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #0a0f1c;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #007bff;
+        }
+        /* Style for the project modal content */
+        #project-modal .modal-content {
+            padding: 0;
+            max-width: 900px;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+        }
+
+    </style>
+</head>
+<body class="antialiased bg-primaryDark">
+
+    <!-- Modal for Form Feedback -->
+    <div id="feedback-modal" class="modal">
+        <div class="modal-content">
+            <i id="modal-icon" class="text-5xl mb-4 text-accentBlue"></i>
+            <h3 id="modal-title" class="text-2xl font-bold mb-3"></h3>
+            <p id="modal-message" class="text-gray-400 mb-6"></p>
+            <button onclick="document.getElementById('feedback-modal').style.display='none'" class="px-6 py-2 bg-accentBlue text-white font-semibold rounded-full hover:bg-white hover:text-accentBlue transition-colors duration-300">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Project Modal/Lightbox -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content !p-0 !max-w-4xl w-[95%] border-none bg-transparent shadow-none relative">
+            <!-- Close Button -->
+            <button onclick="document.getElementById('project-modal').style.display='none'" class="absolute -top-10 right-0 text-white hover:text-red-500 transition-colors z-20 text-3xl font-bold p-2 md:-right-10">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            <div id="project-modal-content" class="bg-deepBlue rounded-xl overflow-hidden shadow-2xl border border-accentBlue/20">
+                <!-- Content injected here by openProjectModal function -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-primaryDark/80 border-b border-white/5" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer">
+                    <span class="text-2xl font-bold tracking-tighter text-white">MARK</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#about" class="hover:text-accentBlue transition-colors duration-300 text-sm font-medium">ABOUT ME</a>
+                        <a href="#work" class="hover:text-accentBlue transition-colors duration-300 text-sm font-medium">PROJECTS</a>
+                        <a href="#process" class="hover:text-accentBlue transition-colors duration-300 text-sm font-medium">SERVICES</a>
+                        <a href="#contact" class="hover:text-accentBlue transition-colors duration-300 text-sm font-medium">CONTACT</a>
+                        <!-- LET'S TALK Button -->
+                        <a href="#contact" class="px-5 py-2 bg-accentBlue text-white hover:bg-white hover:text-accentBlue transition-all duration-300 rounded-full text-sm font-medium ripple-btn shadow-lg">LET'S TALK</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button placeholder -->
+                <div class="md:hidden">
+                    <button class="text-white hover:text-accentBlue">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-primaryDark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Left Content Area -->
+            <div class="relative z-10">
+                <div class="mb-4 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-gray-400 tracking-wider text-sm font-semibold uppercase mb-1">DIN MARK GABANE</h3>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+                    HAY! I'M MARK <br>
+                    <span class="text-accentBlue">I'M A GRAPHIC DESIGNER|</span>
+                </h1>
+                <p class="text-gray-400 text-base max-w-lg mb-10 opacity-0 animate-fade-in-up" style="animation-delay: 0.6s;">
+                    I focus on translating complex brand visions into compelling visual realities. From logo systems to comprehensive marketing collateral, my work delivers impact and coherence.
+                </p>
+                <div class="flex items-center space-x-6 opacity-0 animate-fade-in-up" style="animation-delay: 0.8s;">
+                    <a href="#contact" class="px-6 py-3 bg-accentBlue text-white font-semibold rounded-full hover:bg-white hover:text-accentBlue transition-colors duration-300 ripple-btn shadow-xl">
+                        GET IN TOUCH
+                    </a>
+                    <!-- Social Icons -->
+                    <a href="#" class="text-gray-500 hover:text-accentBlue transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-accentBlue transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-accentBlue transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-accentBlue transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+                </div>
+            </div>
+
+            <!-- Right Image Area -->
+            <div class="relative flex justify-center lg:justify-end opacity-0 animate-fade-in-up" style="animation-delay: 1.0s;">
+                <!-- Geometric elements (similar to the image) -->
+                <div class="absolute w-full h-full">
+                    <div class="absolute top-1/4 left-1/4 w-4 h-4 bg-gray-600 rounded-full"></div>
+                    <div class="absolute top-3/4 right-1/4 w-2 h-2 bg-accentBlue rounded-full animate-pulse"></div>
+                    <!-- Large circular element -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-accentBlue/20 rounded-full"></div>
+                </div>
+                <!-- IMPORTANT: Replace this placeholder URL with your actual headshot/photo -->
+                <img src="https://placehold.co/400x500/0a0f1c/007bff?text=Alex+Martinez+Photo" alt="Din Mark Gabane" class="w-full max-w-sm h-auto rounded-xl object-cover z-20 shadow-2xl border-2 border-accentBlue/50" style="object-position: top;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Logo Bar Section (REMOVED) -->
+
+    <!-- About Me Section (Based on image's "About Us" section) -->
+    <section id="about" class="py-24 bg-primaryDark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Left Image Area -->
+            <div class="relative flex justify-center lg:justify-start reveal">
+                 <!-- IMPORTANT: Replace this placeholder URL with your actual headshot/photo -->
+                <img src="https://placehold.co/300x400/0a0f1c/007bff?text=Alex+Martinez+Photo" alt="Din Mark Gabane" class="w-full max-w-xs h-auto rounded-xl object-cover z-10 shadow-2xl border-2 border-accentBlue/50">
+                <!-- Decorative Circle Element -->
+                <div class="about-circle"></div>
+            </div>
+            
+            <!-- Right Content Area -->
+            <div class="reveal">
+                <h3 class="text-sm font-semibold uppercase text-gray-400 mb-2 tracking-widest">ABOUT ME</h3>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-8">
+                    I AM AVAILABLE FOR <br>
+                    <span class="text-accentBlue">BRANDING & VISUAL IDENTITY</span>
+                </h2>
+                <p class="text-gray-400 leading-relaxed mb-8 max-w-lg">
+                    I specialize in visual communication, blending strategy with creativity to produce designs that not only look incredible but also achieve defined business objectives. My expertise spans logo design, print materials, digital marketing assets, and art direction.
+                </p>
+                
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4 mb-10">
+                    <div class="border-r border-gray-700 pr-4">
+                        <span class="block text-3xl font-extrabold text-accentBlue">70+</span>
+                        <span class="text-sm text-gray-400">Branding Projects</span>
+                    </div>
+                    <div class="border-r border-gray-700 pr-4">
+                        <span class="block text-3xl font-extrabold text-accentBlue">2+</span>
+                        <span class="text-sm text-gray-400">Years Experience</span>
+                    </div>
+                    <div>
+                        <span class="block text-3xl font-extrabold text-accentBlue">7+</span>
+                        <span class="text-sm text-gray-400">Client Endorsements</span>
+                    </div>
+                </div>
+
+                <a href="#contact" class="px-6 py-3 bg-accentBlue text-white font-semibold rounded-full hover:bg-white hover:text-accentBlue transition-colors duration-300 ripple-btn shadow-xl">
+                    VIEW PORTFOLIO
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Grid Section (Projects) -->
+    <section id="work" class="py-24 bg-[#061021]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16 reveal">
+                <h3 class="text-sm font-semibold uppercase text-gray-400 mb-1 tracking-widest">MY WORK</h3>
+                <h2 class="text-4xl font-extrabold mb-2">RECENT PROJECT</h2>
+                <div class="h-1 w-20 bg-accentBlue mt-4"></div>
+            </div>
+
+            <!-- Dynamic Grid Container - Now 3 Columns, Non-Staggered -->
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Projects will be injected here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (Using old #process ID) -->
+    <section id="process" class="py-24 bg-primaryDark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="mb-16 reveal">
+                <h3 class="text-sm font-semibold uppercase text-gray-400 mb-1 tracking-widest">SERVICES</h3>
+                <h2 class="text-4xl font-extrabold mb-2">GRAPHIC DESIGN SERVICES I AM PROVIDING</h2>
+                <div class="h-1 w-20 bg-accentBlue mt-4"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="p-8 bg-[#0a0f1c] rounded-xl reveal transition-shadow duration-300 hover:shadow-2xl hover:shadow-accentBlue/20">
+                    <i class="fas fa-palette text-4xl text-accentBlue mb-4"></i>
+                    <h3 class="text-xl font-bold mb-3">Brand Identity & Logo</h3>
+                    <p class="text-gray-400 text-sm">Full-scale brand development, including core logos, guidelines, and visual systems.</p>
+                </div>
+                <!-- Service Card 2 -->
+                <div class="p-8 bg-[#0a0f1c] rounded-xl reveal transition-shadow duration-300 hover:shadow-2xl hover:shadow-accentBlue/20" style="animation-delay: 0.2s;">
+                    <i class="fas fa-print text-4xl text-accentBlue mb-4"></i>
+                    <h3 class="text-xl font-bold mb-3">Print & Packaging Design</h3>
+                    <p class="text-gray-400 text-sm">Designing high-impact materials like brochures, business cards, and product packaging.</p>
+                </div>
+                <!-- Service Card 3 -->
+                <div class="p-8 bg-[#0a0f1c] rounded-xl reveal transition-shadow duration-300 hover:shadow-2xl hover:shadow-accentBlue/20" style="animation-delay: 0.4s;">
+                    <i class="fas fa-photo-video text-4xl text-accentBlue mb-4"></i>
+                    <h3 class="text-xl font-bold mb-3">Digital Marketing Assets</h3>
+                    <p class="text-gray-400 text-sm">Creating engaging visuals for social media campaigns, web banners, and email marketing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-[#061021]">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold mb-4">Let's Create Together</h2>
+                <p class="text-gray-400">Have a project in mind? Drop me a line.</p>
+            </div>
+
+            <!-- Added id="contact-form" for submission handling -->
+            <form id="contact-form" class="space-y-8 reveal bg-surface/30 p-8 md:p-12 rounded-2xl border border-white/5 shadow-xl backdrop-blur-sm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="input-group">
+                        <input type="text" id="name" required>
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email" required>
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="project_type" required>
+                    <label for="project_type">Project Type (Branding, Print, Digital Ads)</label>
+                </div>
+                <div class="input-group">
+                    <textarea rows="4" id="message" required></textarea>
+                    <label for="message">Tell me about your project</label>
+                </div>
+                <div class="pt-4 text-center">
+                    <button type="submit" id="submit-button" class="px-8 py-3 bg-accentBlue text-white font-bold rounded-full hover:bg-white hover:text-accentBlue transition-all duration-300 transform hover:scale-105 ripple-btn">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#050a16] py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-2xl font-bold text-white">MARK<span class="text-accentBlue">.</span></div>
+            <div class="flex gap-6 text-gray-400">
+                <a href="#" class="hover:text-accentBlue transition-colors">Instagram</a>
+                <a href="#" class="hover:text-accentBlue transition-colors">Dribbble</a>
+                <a href="#" class="hover:text-accentBlue transition-colors">Behance</a>
+                <a href="#" class="hover:text-accentBlue transition-colors">LinkedIn</a>
+            </div>
+            <p class="text-gray-600 text-sm">&copy; 2024 Din Mark Design. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, addDoc, collection, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuration and Initialization
+        setLogLevel('Debug');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let db, auth;
+        
+        try {
+            const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            // Authentication
+            const authPromise = typeof __initial_auth_token !== 'undefined'
+                ? signInWithCustomToken(auth, __initial_auth_token)
+                : signInAnonymously(auth);
+
+            authPromise.catch(error => {
+                console.error("Firebase Auth failed:", error);
+            });
+            
+        } catch (e) {
+            console.error("Firebase initialization error. Check __firebase_config.", e);
+        }
+
+        /**
+         * Displays a custom modal message to the user.
+         * @param {string} title - The title of the message.
+         * @param {string} message - The content of the message.
+         * @param {boolean} isSuccess - True for success (green icon), false for error (red icon).
+         */
+        function showFeedback(title, message, isSuccess) {
+            const modal = document.getElementById('feedback-modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            
+            const icon = document.getElementById('modal-icon');
+            if (isSuccess) {
+                icon.className = 'fas fa-check-circle text-5xl mb-4 text-accentBlue';
+            } else {
+                icon.className = 'fas fa-exclamation-triangle text-5xl mb-4 text-red-500';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        /**
+         * Handles the contact form submission, saving data to Firestore.
+         */
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitButton = document.getElementById('submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+
+            // Ensure Firebase is initialized and user is potentially authenticated
+            if (!db || !auth || !auth.currentUser) {
+                try {
+                    // Try to wait for authentication to complete if not already done
+                    await (typeof __initial_auth_token !== 'undefined'
+                        ? signInWithCustomToken(auth, __initial_auth_token)
+                        : signInAnonymously(auth));
+                } catch (e) {
+                    showFeedback('Error', 'Authentication failed. Cannot send message.', false);
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Message';
+                    return;
+                }
+            }
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                project_type: document.getElementById('project_type').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date(),
+                userId: auth.currentUser.uid // Use authenticated user ID
+            };
+
+            const collectionPath = `artifacts/${appId}/public/data/contact_messages`;
+
+            try {
+                await addDoc(collection(db, collectionPath), formData);
+                
+                showFeedback('Success!', 'Thank you for your message. I will get back to you soon!', true);
+                form.reset(); // Clear the form on success
+                
+            } catch (error) {
+                console.error("Error writing document: ", error);
+                showFeedback('Error', 'Failed to send message. Please try again later or contact me directly via email.', false);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+            }
+        }
+        
+        /**
+         * Opens the project modal/lightbox with specific project details.
+         * This function is attached globally to the window for direct use in the HTML onclick attributes.
+         * @param {number} index - The index of the project in the projects array.
+         */
+        window.openProjectModal = (index) => {
+            const project = projects[index];
+            if (!project) return;
+
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('project-modal-content');
+
+            content.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <!-- Image Display (Large) -->
+                    <div class="bg-[#111827] p-4 flex items-center justify-center lg:col-span-1 rounded-t-xl lg:rounded-tr-none lg:rounded-l-xl">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-auto max-h-[70vh] object-contain rounded-lg shadow-xl">
+                    </div>
+                    
+                    <!-- Details Panel -->
+                    <div class="p-6 lg:p-10 lg:col-span-1 flex flex-col justify-center">
+                        <h4 class="text-sm font-semibold uppercase text-accentBlue mb-2">${project.primary_category}</h4>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-4">${project.title}</h2>
+                        <p class="text-gray-400 mb-6 text-sm">
+                            This project showcases my ability to blend visual aesthetics with strategic thinking, resulting in a design that is both engaging and effective. 
+                        </p>
+                        
+                        <div class="mb-6">
+                            <p class="text-white font-medium mb-1 text-base">Key Focus:</p>
+                            <span class="text-gray-400 text-sm">${project.secondary_category}</span>
+                        </div>
+                        
+                        <a href="#contact" onclick="document.getElementById('project-modal').style.display='none'" class="px-6 py-3 bg-accentBlue text-white font-semibold rounded-full text-center hover:bg-white hover:text-accentBlue transition-colors duration-300 ripple-btn mt-4">
+                            Discuss a Similar Project
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        };
+
+
+        // Attach event listener after the DOM is loaded
+        window.addEventListener('load', () => {
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleFormSubmit);
+            }
+            renderProjects();
+            revealOnScroll(); // Trigger initial check
+        });
+
+        // ==========================================
+        //  USER CONFIGURATION (EDIT HERE)
+        // ==========================================
+
+        // 1. PROJECT GRID CONFIGURATION
+        const projects = [
+            {
+                title: "Abstract Visuals",
+                primary_category: "Experimental Graphics & Concept Art",
+                secondary_category: "Strategy, Visual System",
+                // REPLACE URL BELOW with your own project image
+                image: "cover.png"
+            },
+            {
+                title: "Footwear Campaign",
+                primary_category: "Fashion Marketing - Sportswear Campaign",
+                secondary_category: "Print, Poster",
+                // REPLACE URL BELOW with your own project image
+                image: "shoes.png"
+            },
+            {
+                title: "Burger Promotion",
+                primary_category: "Food & Beverage Promotion - Restaurant Launch Campaign",
+                secondary_category: "Digital Marketing, Layout",
+                // REPLACE URL BELOW with your own project image
+                image: "burger.png"
+            },
+             {
+                title: "Cyberpunk Fashion",
+                primary_category: "Editorial/Print",
+                secondary_category: "Layout Design, Product Styling Poster",
+                // REPLACE URL BELOW with your own project image
+                image: "poster.png"
+            },
+            {
+                title: "E-book Cover and Interior Design",
+                primary_category: "Book Design",
+                secondary_category: "Typography, Illustration",
+                // REPLACE URL BELOW with your own project image
+                image: "ebook.png"
+            },
+            {
+                title: "Music Album Art",
+                primary_category: "Event Poster",
+                secondary_category: "Album Art / Music Promotion",
+                // REPLACE URL BELOW with your own project image
+                image: "beat.png"
+            }
+        ];
+        
+        // Note: I've updated the placeholder images in the 'projects' array to be 800x600, which is larger, to better demonstrate the lightbox functionality.
+        
+        // ==========================================
+        //  END CONFIGURATION
+        // ==========================================
+
+
+        // RENDER PROJECTS
+        const renderProjects = () => {
+            const container = document.getElementById('projects-grid');
+            let html = '';
+
+            projects.forEach((project, index) => {
+                // ADDED: onclick handler to open the modal
+                html += `
+                <div class="project-card group cursor-pointer reveal" style="animation-delay: ${index * 0.15}s;" onclick="openProjectModal(${index})">
+                    <div class="overflow-hidden aspect-video bg-surface">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-in-out">
+                    </div>
+                    <div class="p-5">
+                        <h4 class="text-sm font-semibold text-accentBlue mb-1">${project.primary_category}</h4>
+                        <h3 class="text-lg font-semibold text-white mb-2">${project.title}</h3>
+                        <div class="flex justify-between items-center pt-2">
+                            <p class="text-gray-500 text-xs">${project.secondary_category}</p>
+                            <!-- Arrow button removed as requested -->
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        };
+
+
+        // 1. SCROLL REVEAL ANIMATION
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150;
+            
+            // Re-select all reveals including dynamic ones
+            const allReveals = document.querySelectorAll('.reveal');
+
+            allReveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+
+        // 2. NAVBAR BLUR ON SCROLL
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+                navbar.classList.replace('bg-primaryDark/80', 'bg-primaryDark/95');
+            } else {
+                navbar.classList.remove('shadow-lg');
+                navbar.classList.replace('bg-primaryDark/95', 'bg-primaryDark/80');
+            }
+        });
+
+        // 3. RIPPLE BUTTON EFFECT
+        document.querySelectorAll('.ripple-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+
+                let ripples = document.createElement('span');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                ripples.classList.add('ripple');
+                this.appendChild(ripples);
+
+                setTimeout(() => {
+                    ripples.remove();
+                }, 600);
+            });
+        });
+
+    </script>
+</body>
+</html>
